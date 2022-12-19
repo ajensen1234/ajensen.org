@@ -22,7 +22,7 @@ If you like the theme, give it a star!
 [![Preview](https://raw.githubusercontent.com/alshedivat/al-folio/master/assets/img/al-folio-preview.png)](https://alshedivat.github.io/al-folio/)
 
 
-## User community
+## User community need
 
 The vibrant community of **al-folio** users is growing!
 Academics around the world use this theme for their homepages, blogs, lab pages, as well as webpages for courses, workshops, conferences, meetups, and more.
@@ -130,30 +130,32 @@ Score Based Methods (NeurIPS: <a href="https://score-based-methods-workshop.gith
 
 ## Table Of Contents
 
-  * [User community](#user-community)
-  * [Lighthouse PageSpeed Insights](#lighthouse-pagespeed-insights)
-  * [Getting started](#getting-started)
-    + [Installation](#installation)
+- [al-folio](#al-folio)
+  - [User community need](#user-community-need)
+  - [Lighthouse PageSpeed Insights](#lighthouse-pagespeed-insights)
+  - [Table Of Contents](#table-of-contents)
+  - [Getting started](#getting-started)
+    - [Installation](#installation)
       - [Local setup using Docker (Recommended on Windows)](#local-setup-using-docker-recommended-on-windows)
       - [Local Setup (Standard)](#local-setup-standard)
       - [Deployment](#deployment)
       - [Upgrading from a previous version](#upgrading-from-a-previous-version)
-    + [FAQ](#faq)
-  * [Features](#features)
-    + [Publications](#publications)
-    + [Collections](#collections)
-    + [Layouts](#layouts)
+    - [FAQ](#faq)
+  - [Features](#features)
+    - [Publications](#publications)
+    - [Collections](#collections)
+    - [Layouts](#layouts)
       - [The iconic style of Distill](#the-iconic-style-of-distill)
-      - [Full support for math & code](#full-support-for-math--code)
+      - [Full support for math \& code](#full-support-for-math--code)
       - [Photos](#photos)
-    + [Other features](#other-features)
+    - [Other features](#other-features)
       - [GitHub repositories and user stats](#github-repositories-and-user-stats)
       - [Theming](#theming)
       - [Social media previews](#social-media-previews)
       - [Atom (RSS-like) Feed](#atom-rss-like-feed)
-  * [Contributing](#contributing)
-    + [Core Contributors](#core-contributors)
-  * [License](#license)
+  - [Contributing](#contributing)
+    - [Maintainers](#maintainers)
+  - [License](#license)
 
 ## Getting started
 
