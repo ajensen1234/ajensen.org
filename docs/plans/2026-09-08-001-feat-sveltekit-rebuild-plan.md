@@ -335,7 +335,7 @@ during implementation; per-unit Files sections are authoritative.)
 
 ---
 
-- [ ] U5. **Projects data pages + CV page**
+- [x] U5. **Projects data pages + CV page**
 
 **Goal:** Projects render from simple data files (one file per project); CV page links the vendored PDF.
 

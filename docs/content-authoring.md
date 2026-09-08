@@ -55,15 +55,36 @@ first step of `bun run build`).
 
 ## Projects
 
-- One data file per project in `src/content/projects/` (schema: `title`,
-  `period`, `summary`, `role`, `links`, `highlight`). Adding a project is
-  editing one file; a malformed file fails the build.
+- One data file per project in `src/content/projects/` — a frontmatter-only
+  markdown file. Adding a project is adding a file; a malformed file **fails
+  the build** naming the file.
+- Schema (all required unless noted):
+
+  | Field | Shape | Notes |
+  |---|---|---|
+  | `title` | string | card heading |
+  | `period` | string | human display, e.g. `April 2024 – present` |
+  | `periodStart` | string | ISO-ish sort key, e.g. `2024-04` |
+  | `role` | string | one line, e.g. `Senior AI Architect` |
+  | `summary` | string | 2–4 sentences |
+  | `links` | list of `{label, url}` | optional — omit for zero links |
+  | `highlight` | boolean | optional — surfaces on the homepage |
+
+  Cards sort highlighted-first, then `periodStart` descending (slug tiebreak
+  keeps order deterministic). List-only in v1: no detail routes, no slugs to
+  maintain.
 
 ## CV
 
-- The CV page's Education/Positions YAML is a **hand-maintained mirror** of
-  `static/resume.pdf` — keep it to a one-screen summary and re-verify against
-  the PDF on each edit (the PDF is vendored from `~/repo/resume-cv/resume.pdf`).
+- The CV page's Education/Positions live in `src/data/cv.md` frontmatter
+  (`education` and `positions` lists). **Array order = display order** — the
+  file reads top-to-bottom like the CV does.
+- Position item shape: `org`, `location`, `title`, `period`, `details` (list
+  of one-liners). Education item shape: `school`, `location`, `degree`,
+  `period`, `details`.
+- It is a **hand-maintained mirror** of the LaTeX CV at
+  `~/repo/resume-cv` — keep it to a one-screen summary and re-verify against
+  the PDF on each edit (the PDF is vendored to `static/resume.pdf`).
 
 ## Vendored files — one habit
 
