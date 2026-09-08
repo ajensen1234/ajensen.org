@@ -1,0 +1,10 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@plugin 'daisyui' {
+	themes:
+		light --default,
+		dark --prefersdark;
+}
+
+/* Custom theme tokens land here in U7 (design pass). */

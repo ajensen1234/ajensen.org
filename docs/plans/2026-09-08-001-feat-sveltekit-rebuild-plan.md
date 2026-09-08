@@ -118,6 +118,10 @@ behavior instead.
   muscle-memory change with zero site benefit; noted as an option, not done.
 - **Vite 8 + vite-plugin-svelte 7 + Node 22** — the only combo satisfying Kit 2.70's peer
   range going forward; fallback combo (Vite 7 + vps 6) documented if something breaks.
+- **Package manager / runtime: Bun** (Andrew's choice, decided at execution start):
+  `bun install` with `bun.lock` committed; scripts run via `bun run`; TypeScript scripts
+  (`scripts/check-content.ts`) execute directly with bun — no `tsx` dependency. CI uses
+  `oven-sh/setup-bun@v2` + `bun install --frozen-lockfile`.
 - **R17 loudness lives in the prerenderer, not the adapter**: `fallback: '404.html'`
   switches adapter-static into SPA-tolerant mode and mutes its strict-route error. Keep
   `strict: true` anyway, rely on default `handleError: 'fail'` + `handleHttpError: 'fail'`,
@@ -212,7 +216,10 @@ during implementation; per-unit Files sections are authoritative.)
 
 **Approach:**
 - First commit is hygiene-only: delete `repomix-output.xml`, update `.gitignore`, `jj describe -m` the change holding the requirements doc — so the scaffold commit doesn't trip jj's snapshot limit.
-- Scaffold via `npx sv create` (SvelteKit 2 + Svelte 5 + TS) or manual manifest; pin: svelte 5.x, @sveltejs/kit 2.x, @sveltejs/adapter-static 3.x, vite 8, @sveltejs/vite-plugin-svelte 7, tailwindcss 4 + @tailwindcss/vite + daisyui 5, mdsvex 0.12.8.
+- Scaffold written as a manual manifest (bun-managed) rather than `npx sv create`
+  (scaffold-into-nonempty-repo friction); pins: svelte 5.x, @sveltejs/kit 2.x,
+  @sveltejs/adapter-static 3.x, vite 8, @sveltejs/vite-plugin-svelte 7, tailwindcss 4 +
+  @tailwindcss/vite + daisyui 5, mdsvex 0.12.8.
 - `svelte.config.js`: adapter-static `{ pages: 'build', assets: 'build', fallback: '404.html', strict: true }`; no `paths.base`; mdsvex `extensions: ['.svx', '.md']`; `kit.prerender.entries: ['*']`.
 - `src/routes/+layout.ts`: `export const prerender = true; export const trailingSlash = 'always';`
 - `app.css`: `@import 'tailwindcss'; @plugin 'daisyui' { themes: light --default, dark --prefersdark; }`.
@@ -244,7 +251,7 @@ during implementation; per-unit Files sections are authoritative.)
 - Modify: `.github/workflows/deploy.yml` history (the old one is overwritten in the same change); `README.md` (rollback runbook)
 
 **Approach:**
-- Two-job workflow on `push: branches: [master]` + `workflow_dispatch`: root `permissions: { contents: read, pages: write, id-token: write }`; `concurrency: { group: pages, cancel-in-progress: true }`; build job (`checkout@v7`, `setup-node@v5` w/ node 22 + npm cache, `configure-pages@v6`, `npm ci`, `npm run check && npm run build`, `upload-pages-artifact@v5` with `path: build`); deploy job (`needs: build`, `environment: { name: github-pages, url: … }`, `deploy-pages@v5`).
+- Two-job workflow on `push: branches: [master]` + `workflow_dispatch`: root `permissions: { contents: read, pages: write, id-token: write }`; `concurrency: { group: pages, cancel-in-progress: true }`; build job (`checkout@v7`, `oven-sh/setup-bun@v2`, `bun install --frozen-lockfile`, `configure-pages@v6`, `bun run check && bun run build`, `upload-pages-artifact@v5` with `path: build`); deploy job (`needs: build`, `environment: { name: github-pages, url: … }`, `deploy-pages@v5`).
 - Post-deploy smoke-check job/step: curl every nav route (Home, Publications, Projects, Talks, Blog, CV per R18 — the list grows as units land), one `/_app/` asset (200), a garbage URL (404), `build/CNAME` served — encodes the footgun checklist so a `.nojekyll`-class regression fails CI. Because fallback mode permanently removes the adapter's strict all-routes guarantee, this check (plus a build-log assertion that the prerendered-route count meets a floor) is the durable R17 loudness mechanism, not a one-time verification.
 - Same change: old al-folio `deploy.yml` is fully replaced (disabled by replacement), Docker workflow deletion deferred to U8.
 - Runbook in README: rollback = re-run previous green workflow run; interim-only = flip Pages source back to `gh-pages` (retired at U8).
@@ -271,7 +278,7 @@ during implementation; per-unit Files sections are authoritative.)
 
 **Files:**
 - Create: `src/content/posts/` (first real post: one `hello-world.org` + `hello-world.md`), `scripts/check-content.ts`, `scripts/org-export.el` (or documented Emacs interactive command), `src/lib/server/posts.ts`, `.emacs.d`-side setup documented in `docs/content-authoring.md`
-- Modify: `package.json` (`prebuild` runs `tsx scripts/check-content.ts`), `README.md` (publish flow)
+- Modify: `package.json` (`prebuild` runs `bun scripts/check-content.ts`), `README.md` (publish flow)
 
 **Approach:**
 - Export contract (frontmatter schema): `title`, `date` (from org property, never the clock — deterministic export), `description`, `tags`, `org_hash`. The ox-md backend/template stamps `org_hash` = sha256 of the **whole org file**, whitespace-normalized.
