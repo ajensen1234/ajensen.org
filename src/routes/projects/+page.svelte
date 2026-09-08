@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ProjectCard from '$lib/components/ProjectCard.svelte';
+	import Seo from '$lib/components/Seo.svelte';
 	import { SITE_TITLE } from '$lib/site';
 	import type { Project } from '$lib/server/projects';
 
@@ -9,6 +10,8 @@
 <svelte:head>
 	<title>Projects · {SITE_TITLE}</title>
 </svelte:head>
+
+<Seo title="Projects" path="/projects/" />
 
 <section class="prose max-w-none">
 	<h1>Projects</h1>

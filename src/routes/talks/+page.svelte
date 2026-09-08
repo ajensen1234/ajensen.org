@@ -1,5 +1,6 @@
 <script lang="ts">
 	import PublicationEntry from '$lib/components/PublicationEntry.svelte';
+	import Seo from '$lib/components/Seo.svelte';
 	import type { Entry } from '$lib/server/bibtex';
 	import { SITE_TITLE } from '$lib/site';
 
@@ -9,6 +10,8 @@
 <svelte:head>
 	<title>Talks · {SITE_TITLE}</title>
 </svelte:head>
+
+<Seo title="Talks & presentations" path="/talks/" />
 
 <section class="prose max-w-none">
 	<h1>Talks &amp; presentations</h1>

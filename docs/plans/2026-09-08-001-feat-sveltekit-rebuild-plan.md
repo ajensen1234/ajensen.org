@@ -364,7 +364,7 @@ during implementation; per-unit Files sections are authoritative.)
 
 ---
 
-- [ ] U6. **Blog routes + RSS/sitemap/robots + Open Graph**
+- [x] U6. **Blog routes + RSS/sitemap/robots + Open Graph**
 
 **Goal:** Full blog surface (index + post routes), prerendered RSS with full content, truthful sitemap, per-page OG tags.
 

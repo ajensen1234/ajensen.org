@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Seo from '$lib/components/Seo.svelte';
 	import type { CvData } from '$lib/server/cv';
 	import { SITE_TITLE } from '$lib/site';
 
@@ -13,6 +14,8 @@
 <svelte:head>
 	<title>CV · {SITE_TITLE}</title>
 </svelte:head>
+
+<Seo title="Curriculum Vitae" path="/cv/" />
 
 <section class="prose max-w-none">
 	<div class="flex flex-wrap items-baseline justify-between gap-x-4">

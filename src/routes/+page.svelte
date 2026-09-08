@@ -1,11 +1,13 @@
 <script lang="ts">
+	import Seo from '$lib/components/Seo.svelte';
 	import { SITE_TITLE } from '$lib/site';
 </script>
 
 <svelte:head>
 	<title>{SITE_TITLE}</title>
-	<meta name="description" content="Personal site of Andrew Jensen — ML/CV researcher in orthopaedic biomechanics." />
 </svelte:head>
+
+<Seo title="Andrew Jensen — ML/CV researcher in orthopaedic biomechanics" />
 
 <!--
 	Minimal landing page (R18 hierarchy seed). Bespoke design and the full

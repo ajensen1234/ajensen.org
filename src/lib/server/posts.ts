@@ -32,19 +32,29 @@ const modules = import.meta.glob('/src/content/posts/*.md', {
 	import: 'metadata'
 }) as Record<string, RawMeta | undefined>;
 
+/** mdsvex embeds frontmatter via JSON.stringify, so js-yaml-parsed dates
+ * arrive as ISO timestamps ("2026-09-08T00:00:00.000Z"), not the exported
+ * "YYYY-MM-DD". Normalize to the plain date for everything downstream. */
+function asIsoDate(value: unknown): string | undefined {
+	if (value instanceof Date) return value.toISOString().slice(0, 10);
+	if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}/.test(value)) return value.slice(0, 10);
+	return undefined;
+}
+
 export const posts: PostMeta[] = Object.entries(modules)
 	.flatMap(([path, meta]) => {
 		const slug = path.split('/').pop()?.replace(/\.md$/, '');
+		const date = asIsoDate(meta?.date);
 		// A post that made it past scripts/check-content.ts always has these;
 		// anything malformed here was already rejected loudly at build start.
-		if (!slug || typeof meta?.title !== 'string' || typeof meta?.date !== 'string') {
+		if (!slug || typeof meta?.title !== 'string' || !date) {
 			return [];
 		}
 		return [
 			{
 				slug,
 				title: meta.title,
-				date: meta.date,
+				date,
 				description: typeof meta.description === 'string' ? meta.description : undefined,
 				tags: Array.isArray(meta.tags)
 					? meta.tags.filter((t): t is string => typeof t === 'string')
