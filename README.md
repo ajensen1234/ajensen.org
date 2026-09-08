@@ -1,3 +1,40 @@
+# ajensen.org
+
+> **Rebuild in progress (2026-09):** this repo is being converted from al-folio (Jekyll)
+> to SvelteKit 2 + Svelte 5 + Tailwind 4 + daisyUI 5, deployed by GitHub Actions.
+> See `docs/plans/` and `docs/brainstorms/` for the plan. The al-folio README content
+> below is stale and will be replaced at cleanup.
+
+## Deploy & rollback runbook
+
+**Cutover (once, in this exact order):**
+
+1. Flip the Pages source to Actions (do this BEFORE pushing, or the first deploy
+   fails with a Pages-configuration error):
+
+   ```sh
+   gh api -X PUT repos/ajensen1234/ajensen.org/pages -f build_type=workflow
+   gh api repos/ajensen1234/ajensen.org/pages   # verify: cname still www.ajensen.org
+   ```
+
+2. Push master (`jj git push`). The workflow builds, verifies the output (`.nojekyll`,
+   `CNAME`, `404.html`), deploys, then smoke-checks the live site (homepage, one
+   `_app/` asset, 404 behavior).
+
+**Rollback:**
+
+- *Any time:* re-run a previous green workflow run (Actions tab → run → Re-run all
+  jobs). Note: a re-run rebuilds from the recorded commit — the commit must still be
+  reachable in history.
+- *Migration window only:* flip Pages source back to the `gh-pages` branch (Settings
+  → Pages → deploy from branch) to restore the old al-folio site. This option retires
+  when `gh-pages` is deleted at cleanup.
+
+**Never** unset the custom domain (Settings → Pages → custom domain = `www.ajensen.org`)
+or turn off "Enforce HTTPS".
+
+<!-- Stale al-folio README below — replaced at cleanup (U8) -->
+
 # al-folio
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [maintainers]: https://img.shields.io/badge/maintainers-3-success.svg 'Number of maintainers'

@@ -1,44 +1,93 @@
-name: deploy
+# Deploy ajensen.org (SvelteKit static) to GitHub Pages.
+#
+# Replaces the al-folio Jekyll deploy (bin/deploy + gh-pages branch pushing).
+# One-time manual step BEFORE the first push: repo Settings → Pages →
+# Source = "GitHub Actions" — otherwise deploy-pages fails with a
+# Pages-configuration error. Custom domain (www.ajensen.org) lives in
+# Settings → Pages; never unset it. static/CNAME + static/.nojekyll are
+# copied verbatim into the build output on every build.
+#
+# Rollback: re-run a previous green workflow run (rebuilds from that commit),
+# or — during the migration window only — flip Pages source back to the
+# gh-pages branch. See README.md.
+
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches:
-      - master
-      - main
-  pull_request:
-    branches:
-      - master
-      - main
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@v7
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - uses: actions/configure-pages@v6
+
+      - name: Typecheck and build
+        run: bun run check && bun run build
+
+      - name: Verify build output (footgun checklist)
+        run: |
+          test -f build/.nojekyll || { echo "FAIL: build/.nojekyll missing — _app/* would be hidden by Jekyll processing"; exit 1; }
+          test -f build/CNAME || { echo "FAIL: build/CNAME missing — custom domain would not be re-asserted"; exit 1; }
+          test -f build/index.html || { echo "FAIL: build/index.html missing"; exit 1; }
+          test -f build/404.html || { echo "FAIL: build/404.html missing (adapter fallback)"; exit 1; }
+          grep -q "www.ajensen.org" build/CNAME || { echo "FAIL: build/CNAME has wrong content"; exit 1; }
+          echo "Build output verified."
+
+      - uses: actions/upload-pages-artifact@v5
         with:
-          ruby-version: "3.2"
-          bundler-cache: true
-      - name: Install deps
+          path: build/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
+
+  smoke-check:
+    # Durable R17 loudness: fallback: '404.html' mutes the adapter's strict
+    # all-routes check, so route coverage is asserted against the LIVE site
+    # after every deploy — not verified once by hand.
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check deployed routes
         run: |
-          npm install -g mermaid.cli
-      - name: Setup deploy options
-        id: setup
-        run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if [[ ${GITHUB_REF} = refs/pull/*/merge ]]; then # pull request
-            echo "SRC_BRANCH=${GITHUB_HEAD_REF}" >> $GITHUB_OUTPUT
-            echo "NO_PUSH=--no-push" >> $GITHUB_OUTPUT
-          elif [[ ${GITHUB_REF} = refs/heads/* ]]; then # branch, e.g. master, source etc
-            echo "SRC_BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
-          fi
-          echo "DEPLOY_BRANCH=gh-pages" >> $GITHUB_OUTPUT
-      - name: Install ImageMagick
-        run: sudo apt-get update && sudo apt-get install -y imagemagick
-      - name: Deploy website
-        run: yes | bash bin/deploy --verbose ${{ steps.setup.outputs.NO_PUSH }}
-          --src ${{ steps.setup.outputs.SRC_BRANCH }}
-          --deploy ${{ steps.setup.outputs.DEPLOY_BRANCH }}
+          BASE="https://www.ajensen.org"
+          # Nav routes per R18 — extend this list as routes land (U4–U6).
+          for route in ""; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "$BASE/$route")
+            test "$code" = "200" || { echo "FAIL: /$route returned $code"; exit 1; }
+          done
+          # One _app asset: a missing .nojekyll makes these 404 while pages render.
+          asset=$(grep -o '_app/immutable/entry/[^"]*\.js' \
+            <(curl -s "$BASE/") | head -1)
+          test -n "$asset" || { echo "FAIL: no _app entry asset found in homepage HTML"; exit 1; }
+          code=$(curl -s -o /dev/null -w "%{http_code}" "$BASE/$asset")
+          test "$code" = "200" || { echo "FAIL: /$asset returned $code (is .nojekyll missing?)"; exit 1; }
+          # Unknown URL must serve the 404 page.
+          code=$(curl -s -o /dev/null -w "%{http_code}" "$BASE/this-route-does-not-exist/")
+          test "$code" = "404" || { echo "FAIL: unknown URL returned $code, expected 404"; exit 1; }
+          echo "Smoke check passed."
