@@ -435,7 +435,9 @@ during implementation; per-unit Files sections are authoritative.)
 
 ---
 
-- [ ] U8. **Cleanup + end-to-end verification + learning capture**
+- [x] U8. **Cleanup + end-to-end verification + learning capture**
+  *(gh-pages remote deletion + Andrew's assisted publish rehearsal remain manual
+  steps for A1 — see README runbook.)*
 
 **Goal:** Exactly one deploy path; repo reads as a SvelteKit site, not a theme archaeology dig; the rebuild becomes institutional knowledge.
 
