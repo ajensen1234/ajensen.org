@@ -396,7 +396,11 @@ during implementation; per-unit Files sections are authoritative.)
 
 ---
 
-- [ ] U7. **Design system, IA, theming, accessibility pass**
+- [x] U7. **Design system, IA, theming, accessibility pass**
+  *(landed as a structural stub per A1 decision 2026-09-08: Nav + ThemeToggle +
+  Footer + styled 404 + layout composition done; custom daisyUI themes,
+  homepage R18 composition, and the deep a11y/design pass deliberately
+  deferred — revisit before or after U8 as desired.)*
 
 **Goal:** The fun part — bespoke layout and theming on the working pipeline: nav per R18, theme toggle per R9, responsive + a11y per R19/R20.
 
