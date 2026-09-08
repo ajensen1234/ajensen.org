@@ -13,11 +13,12 @@
 		"prepare": "svelte-kit sync || echo ''"
 	},
 	"devDependencies": {
+		"@retorquere/bibtex-parser": "^10.0.1",
 		"@sveltejs/adapter-static": "^3.0.10",
 		"@sveltejs/kit": "^2.70.3",
 		"@sveltejs/vite-plugin-svelte": "^7.3.0",
-		"@tailwindcss/vite": "^4.3.3",
 		"@tailwindcss/typography": "^0.5.19",
+		"@tailwindcss/vite": "^4.3.3",
 		"daisyui": "^5.7.28",
 		"mdsvex": "^0.12.8",
 		"svelte": "^5.57.0",
