@@ -201,7 +201,7 @@ during implementation; per-unit Files sections are authoritative.)
 
 ## Implementation Units
 
-- [ ] U1. **Repo hygiene + SvelteKit scaffold**
+- [x] U1. **Repo hygiene + SvelteKit scaffold**
 
 **Goal:** Greenfield SvelteKit app builds locally; static/domain files guaranteed in build output.
 
@@ -238,7 +238,7 @@ during implementation; per-unit Files sections are authoritative.)
 
 ---
 
-- [ ] U2. **Actions deploy + Pages source cutover**
+- [x] U2. **Actions deploy + Pages source cutover**
 
 **Goal:** Push to `master` deploys the site via Actions; custom domain survives; old pipeline disabled; rollback documented.
 
@@ -268,7 +268,7 @@ during implementation; per-unit Files sections are authoritative.)
 
 ---
 
-- [ ] U3. **Content pipeline: org→md export + staleness gate**
+- [x] U3. **Content pipeline: org→md export + staleness gate**
 
 **Goal:** Andrew's authoring loop works end-to-end: edit `.org`, run export, commit, push — with a loud, actionable build failure if the export is absent or stale.
 
