@@ -6,11 +6,11 @@
 	let { data }: { data: { publications: Entry[]; invitedTalks: Entry[]; presentations: Entry[] } } =
 		$props();
 
-	const sections: { title: string; entries: Entry[] }[] = [
+	let sections = $derived.by((): { title: string; entries: Entry[] }[] => [
 		{ title: 'Publications', entries: data.publications },
 		{ title: 'Invited Talks', entries: data.invitedTalks },
 		{ title: 'Presentations', entries: data.presentations }
-	];
+	]);
 </script>
 
 <svelte:head>

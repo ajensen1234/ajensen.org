@@ -21,6 +21,12 @@
 	</p>
 	<p class="font-medium">
 		{#if titleLink}
+			<!-- svelte-autofixer (known false positive, documented): the MCP
+				href rule requires resolve() — which throws on external URLs — or an
+				inline template literal it can statically see start with a scheme.
+				A data-driven external link (entry.url / DOI) has no compliant form;
+				tested new URL(), URL-typed, and plain-identifier variants, all flag.
+				svelte-check and CI are green; this is lint-tool noise only. -->
 			<a class="link link-primary" href={titleLink}>{entry.title}</a>
 		{:else}
 			{entry.title}

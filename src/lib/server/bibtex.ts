@@ -39,7 +39,6 @@ export interface Entry {
 
 const CATEGORIES_SET = new Set<string>(CATEGORIES);
 
-// biome-ignore lint/suspicious/noExplicitAny: parser v10's Entry type is structural but over-narrow for our needs
 type ParserEntry = {
 	key: string;
 	fields: Record<string, unknown>;
