@@ -300,7 +300,7 @@ during implementation; per-unit Files sections are authoritative.)
 
 ---
 
-- [ ] U4. **Publications & talks from vendored cv.bib**
+- [x] U4. **Publications & talks from vendored cv.bib**
 
 **Goal:** `/publications/` and `/talks/` render at build time from the vendored bib with classification, author highlighting, and loud failure on bad data.
 

@@ -19,12 +19,11 @@ facts learning in `docs/solutions/architecture-patterns/`.
   cutover not yet done** (below).
 - **U3 ✅ committed** — org→md pipeline + staleness gate (fixtures tested, exit-1 paths
   verified; export round-trip green).
-- **U4 🔨 ~90%, uncommitted in working copy** — `cv.bib` vendored + classified (30
-  entries: 5 publication / 6 invited-talk / 19 presentation; compound
-  `exactech,presentation` correctly lands presentation-only), publications + talks pages
-  written. **Remaining for U4:** run `bun run check && bun run build`, resolve one
-  svelte-autofixer flag (see Gotchas #2), delete nothing left over, commit
-  (`jj squash` pattern used for U3 fixes — see Gotchas #3).
+- **U4 ✅ committed & pushed** — cv.bib classified (30 entries: 5 publication /
+  6 invited-talk / 19 presentation), publications + talks pages prerendering.
+  First CI run failed on v10.0.1's missing `dist/types`; fixed by the typed shim
+  `src/types/bibtex-parser.d.ts` + `$derived.by` fix — commit `c18d0607`. Push
+  it (`jj git push`) to re-run the workflow.
 - **U5–U8** untouched; follow the plan units in order. U7 needs Andrew's participation
   (guided first-tweak). U8 needs the rollback verification before deleting `gh-pages`.
 
